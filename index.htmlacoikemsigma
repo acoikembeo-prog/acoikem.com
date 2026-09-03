@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Game Tổng Hợp</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #1a1a1a; color: white; margin: 0; padding: 20px; }
+        .nav { margin-bottom: 20px; }
+        button { padding: 10px 20px; font-size: 16px; font-weight: bold; margin: 5px; cursor: pointer; background: #008CBA; color: white; border: none; border-radius: 5px; }
+        button:hover { background: #005f73; }
+        .game-container { display: none; margin: 0 auto; width: 600px; background: #333; padding: 20px; border-radius: 10px; }
+        .active { display: block; }
+        canvas { background: #000; border: 2px solid #fff; display: block; margin: 10px auto; }
+        /* Style Cờ vua */
+        #chess-board { display: grid; grid-template-columns: repeat(8, 50px); grid-template-rows: repeat(8, 50px); width: 400px; margin: 20px auto; border: 4px solid #fff; }
+        .cell { width: 50px; height: 50px; font-size: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; }
+        .white { background: #eeeed2; color: #000; }
+        .black { background: #769656; color: #000; }
+        .selected { background: #baca44 !important; }
+    </style>
+</head>
+<body>
+
+    <h1>KHO GAME GIẢI TRÍ</h1>
+    <div class="nav">
+        <button onclick="switchGame('soccer')">⚽ Bóng Đá</button>
+        <button onclick="switchGame('basketball')">🏀 Bóng Rổ</button>
+        <button onclick="switchGame('chess')">♟️ Cờ Vua</button>
+    </div>
+
+    <!-- GAME BÓNG ĐÁ -->
+    <div id="soccer" class="game-container active">
+        <h2>Bóng Đá (Pong Football)</h2>
+        <div>
+            <button onclick="setSoccerMode(1)">1 Người (Đấu Máy)</button>
+            <button onclick="setSoccerMode(2)">2 Người</button>
+        </div>
+        <p>P1: W/S | P2: Phím Mũi Tên Lên/Xuống</p>
+        <canvas id="soccerCanvas" width="500" height="300"></canvas>
+    </div>
+
+    <!-- GAME BÓNG RỔ -->
+    <div id="basketball" class="game-container">
+        <h2>Bóng Rổ (Canh Lực Ném)</h2>
+        <div>
+            <button onclick="setBasketMode(1)">1 Người</button>
+            <button onclick="setBasketMode(2)">2 Người Thay Phiên</button>
+        </div>
+        <p>Nhấn <b>SPACE (Khoảng trắng)</b> để giữ/thả lực ném bóng!</p>
+        <div id="basketTurn" style="font-weight: bold; color: #ff9900;"></div>
+        <canvas id="basketCanvas" width="500" height="300"></canvas>
+    </div>
+
+    <!-- GAME CỜ VUA -->
+    <div id="chess" class="game-container">
+        <h2>Cờ Vua (2 Người Chơi)</h2>
+        <p id="chessStatus">Lượt chơi: Trắng</p>
+        <div id="chess-board"></div>
+        <button onclick="initChess()">Chơi Lại</button>
+    </div>
+
+    <script>
+        function switchGame(gameId) {
+            document.querySelectorAll('.game-container').forEach(el => el.classList.remove('active'));
+            document.getElementById(gameId).classList.add('active');
+        }
+
+        /* --- CODE BÓNG ĐÁ --- */
+        const sCanvas = document.getElementById('soccerCanvas');
+        const sCtx = sCanvas.getContext('2d');
+        let sMode = 1;
+        let p1 = { x: 10, y: 110, w: 10, h: 80, score: 0 };
+        let p2 = { x: 480, y: 110, w: 10, h: 80, score: 0 };
+        let ball = { x: 250, y: 150, dx: 4, dy: 4, r: 8 };
+        let keys = {};
+
+        window.addEventListener('keydown', e => keys[e.key] = true);
+        window.addEventListener('keyup', e => keys[e.key] = false);
+
+        function setSoccerMode(m) { sMode = m; p1.score = 0; p2.score = 0; resetBall(); }
+        function resetBall() { ball.x = 250; ball.y = 150; ball.dx = -ball.dx; }
+
+        function updateSoccer() {
+            if (keys['w'] && p1.y > 0) p1.y -= 5;
+            if (keys['s'] && p1.y < sCanvas.height - p1.h) p1.y += 5;
+
+            if (sMode === 2) {
+                if (keys['ArrowUp'] && p2.y > 0) p2.y -= 5;
+                if (keys['ArrowDown'] && p2.y < sCanvas.height - p2.h) p2.y += 5;
+            } else {
+                if (ball.y < p2.y + p2.h/2) p2.y -= 3;
+                else p2.y += 3;
+            }
+
+            ball.x += ball.dx; ball.y += ball.dy;
+            if (ball.y <= 0 || ball.y >= sCanvas.height) ball.dy *= -1;
+
+            if (ball.x < p1.x + p1.w && ball.y > p1.y && ball.y < p1.y + p1.h) ball.dx = Math.abs(ball.dx);
+            if (ball.x > p2.x - p2.w && ball.y > p2.y && ball.y < p2.y + p2.h) ball.dx = -Math.abs(ball.dx);
+
+            if (ball.x < 0) { p2.score++; resetBall(); }
+            if (ball.x > sCanvas.width) { p1.score++; resetBall(); }
+        }
+
+        function drawSoccer() {
+            sCtx.clearRect(0,0,sCanvas.width,sCanvas.height);
+            sCtx.fillStyle = 'green'; sCtx.fillRect(0,0,sCanvas.width,sCanvas.height);
+            sCtx.fillStyle = 'white';
+            sCtx.fillRect(p1.x, p1.y, p1.w, p1.h);
+            sCtx.fillRect(p2.x, p2.y, p2.w, p2.h);
+            sCtx.beginPath(); sCtx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); sCtx.fill();
+            sCtx.font = '20px Arial'; sCtx.fillText(`${p1.score} - ${p2.score}`, 220, 30);
+        }
+
+        function loopSoccer() { updateSoccer(); drawSoccer(); requestAnimationFrame(loopSoccer); }
+        loopSoccer();
+
+        /* --- CODE BÓNG RỔ --- */
+        const bCanvas = document.getElementById('basketCanvas');
+        const bCtx = bCanvas.getContext('2d');
+        let bMode = 1, bTurn = 1;
+        let p1Score = 0, p2Score = 0;
+        let power = 0, charging = false, bBall = { x: 50, y: 250, vx: 0, vy: 0, active: false };
+
+        function setBasketMode(m) { bMode = m; p1Score = 0; p2Score = 0; bTurn = 1; updateBasketTurn(); }
+        function updateBasketTurn() {
+            document.getElementById('basketTurn').innerText = bMode === 2 ? `Lượt P${bTurn}` : `Điểm: ${p1Score}`;
+        }
+
+        window.addEventListener('keydown', e => { if(e.code === 'Space' && !bBall.active) charging = true; });
+        window.addEventListener('keyup', e => {
+            if(e.code === 'Space' && charging) {
+                charging = false;
+                bBall.active = true;
+                bBall.vx = power * 0.15;
+                bBall.vy = -power * 0.2;
+                power = 0;
+            }
+        });
+
+        function loopBasket() {
+            bCtx.clearRect(0,0,bCanvas.width,bCanvas.height);
+            if (charging && power < 100) power += 2;
+
+            // Rổ bóng
+            bCtx.fillStyle = 'red'; bCtx.fillRect(400, 100, 40, 10);
+            bCtx.fillRect(435, 50, 5, 60);
+
+            // Cột lực
+            bCtx.fillStyle = 'yellow'; bCtx.fillRect(20, 20, power * 2, 10);
+
+            // Bóng
+            if (bBall.active) {
+                bBall.x += bBall.vx;
+                bBall.y += bBall.vy;
+                bBall.vy += 0.3; // Trọng lực
+
+                // Trúng rổ
+                if (bBall.x > 390 && bBall.x < 430 && bBall.y > 90 && bBall.y < 110) {
+                    if (bTurn === 1) p1Score++; else p2Score++;
+                    resetBasketBall();
+                }
+                if (bBall.y > 300 || bBall.x > 500) resetBasketBall();
+            }
+
+            bCtx.fillStyle = 'orange';
+            bCtx.beginPath(); bCtx.arc(bBall.x, bBall.y, 12, 0, Math.PI*2); bCtx.fill();
+
+            bCtx.fillStyle = 'white'; bCtx.font = '16px Arial';
+            if (bMode === 2) bCtx.fillText(`P1: ${p1Score} | P2: ${p2Score}`, 380, 25);
+
+            requestAnimationFrame(loopBasket);
+        }
+        function resetBasketBall() {
+            bBall = { x: 50, y: 250, vx: 0, vy: 0, active: false };
+            if (bMode === 2) bTurn = bTurn === 1 ? 2 : 1;
+            updateBasketTurn();
+        }
+        loopBasket();
+
+        /* --- CODE CỜ VUA (Đơn giản hóa) --- */
+        const boardEl = document.getElementById('chess-board');
+        let selectedCell = null;
+        let turn = 'W';
+        const initialBoard = [
+            ['r','n','b','q','k','b','n','r'],
+            ['p','p','p','p','p','p','p','p'],
+            ['','','','','','','',''],
+            ['','','','','','','',''],
+            ['','','','','','','',''],
+            ['','','','','','','',''],
+            ['P','P','P','P','P','P','P','P'],
+            ['R','N','B','Q','K','B','N','R']
+        ];
+        let board = [];
+        const icons = {
+            'r':'♜','n':'♞','b':'♝','q':'♛','k':'♚','p':'♟',
+            'R':'♖','N':'♘','B':'♗','Q':'♕','K':'♔','P':'♙'
+        };
+
+        function initChess() {
+            board = JSON.parse(JSON.stringify(initialBoard));
+            turn = 'W';
+            document.getElementById('chessStatus').innerText = "Lượt chơi: Trắng (Chữ in hoa)";
+            renderBoard();
+        }
+
+        function renderBoard() {
+            boardEl.innerHTML = '';
+            for(let r=0; r<8; r++) {
+                for(let c=0; c<8; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = `cell ${(r+c)%2 === 0 ? 'white' : 'black'}`;
+                    cell.innerText = icons[board[r][c]] || '';
+                    cell.onclick = () => handleChessClick(r, c);
+                    if(selectedCell && selectedCell.r === r && selectedCell.c === c) cell.classList.add('selected');
+                    boardEl.appendChild(cell);
+                }
+            }
+        }
+
+        function handleChessClick(r, c) {
+            const piece = board[r][c];
+            const isWhite = piece && piece === piece.toUpperCase();
+            
+            if (selectedCell) {
+                board[r][c] = board[selectedCell.r][selectedCell.c];
+                board[selectedCell.r][selectedCell.c] = '';
+                selectedCell = null;
+                turn = turn === 'W' ? 'B' : 'W';
+                document.getElementById('chessStatus').innerText = `Lượt chơi: ${turn === 'W' ? 'Trắng' : 'Đen'}`;
+            } else {
+                if (piece && ((turn === 'W' && isWhite) || (turn === 'B' && !isWhite))) {
+                    selectedCell = {r, c};
+                }
+            }
+            renderBoard();
+        }
+        initChess();
+    </script>
+</body>
+</html>
