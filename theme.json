@@ -1,0 +1,64 @@
+Dưới đây là toàn bộ mã JSON đã được làm sạch, loại bỏ hoàn toàn các tiền tố số dòng (1|, 2|,...) để đúng cú pháp JSON chuẩn. Bạn chỉ cần sao chép toàn bộ đoạn bên dưới và dán đè vào ô biên tập trên GitHub:
+
+JSON
+{
+  "theme": {
+    "mode": "dark",
+    "strategy": "Tactical Cyber-Broadcast Night Pitch (Sân cỏ ban đêm dưới dàn đèn pha hiện đại)"
+  },
+  "typography": {
+    "fonts": {
+      "heading": "Outfit Variable, sans-serif",
+      "body": "Plus Jakarta Sans Variable, sans-serif",
+      "mono": "JetBrains Mono Variable, monospace"
+    },
+    "font_imports": [
+      "@import \"@fontsource-variable/outfit\";",
+      "@import \"@fontsource-variable/plus-jakarta-sans\";",
+      "@import \"@fontsource-variable/jetbrains-mono\";"
+    ],
+    "scale_px": {
+      "display": 56,
+      "h1": 40,
+      "h2": 32,
+      "h3": 24,
+      "body": 16,
+      "caption": 14
+    },
+    "typesetting_rules": {
+      "headlines": "font-black tracking-tight uppercase",
+      "score_display": "font-mono font-bold tracking-widest text-4xl tabular-nums",
+      "overlines": "text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400",
+      "skill_badges": "font-mono text-xs font-bold tracking-wider uppercase",
+      "commentary_ticker": "font-sans text-sm font-medium tracking-normal"
+    }
+  },
+  "colors": {
+    "palette_archetype": "ARCHETYPE 2: THE PERFORMANCE PRO & TACTICAL BROADCAST",
+    "brand": {
+      "primary": "#10B981",
+      "primary_glow": "rgba(16, 185, 129, 0.45)",
+      "accent_gold": "#F59E0B",
+      "accent_blaze": "#EF4444",
+      "accent_electric_cyan": "#06B6D4",
+      "obsidian_bg": "#0B111A",
+      "glass_bg": "rgba(15, 23, 42, 0.75)"
+    },
+    "surfaces": [
+      {
+        "name": "page",
+        "kind": "solid",
+        "bg": "#080D14",
+        "on_bg": "#F8FAFC",
+        "on_bg_muted": "#94A3B8"
+      },
+      {
+        "name": "panel",
+        "kind": "solid",
+        "bg": "#0F172A",
+        "on_bg": "#F8FAFC",
+        "on_bg_muted": "#94A3B8"
+      }
+    ]
+  }
+}
