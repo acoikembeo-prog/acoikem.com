@@ -1,0 +1,827 @@
+const MORE_PLAYERS = {
+
+debruyne:{
+  id:"debruyne",
+  name:"Kevin De Bruyne",
+  nation:"Belgium",
+  club:"Manchester City",
+  pos:["CM","CAM"],
+  base:91,
+  stats:{
+    pace:76,
+    shooting:88,
+    passing:98,
+    dribbling:90,
+    defending:58,
+    physical:78
+  },
+  image:"images/players/debruyne.jpg"
+},
+
+neymar:{
+  id:"neymar",
+  name:"Neymar Jr",
+  nation:"Brazil",
+  club:"Santos",
+  pos:["LW","CAM"],
+  base:90,
+  stats:{
+    pace:88,
+    shooting:89,
+    passing:93,
+    dribbling:98,
+    defending:37,
+    physical:65
+  },
+  image:"images/players/neymar.jpg"
+},
+
+lewandowski:{
+  id:"lewandowski",
+  name:"Robert Lewandowski",
+  nation:"Poland",
+  club:"Barcelona",
+  pos:["ST"],
+  base:92,
+  stats:{
+    pace:78,
+    shooting:96,
+    passing:82,
+    dribbling:88,
+    defending:40,
+    physical:87
+  },
+  image:"images/players/lewandowski.jpg"
+},
+
+modric:{
+  id:"modric",
+  name:"Luka Modrić",
+  nation:"Croatia",
+  club:"Real Madrid",
+  pos:["CM"],
+  base:89,
+  stats:{
+    pace:72,
+    shooting:82,
+    passing:97,
+    dribbling:94,
+    defending:60,
+    physical:62
+  },
+  image:"images/players/modric.jpg"
+},
+
+zidane:{
+  id:"zidane",
+  name:"Zinedine Zidane",
+  nation:"France",
+  club:"Real Madrid",
+  pos:["CAM","CM"],
+  base:96,
+  stats:{
+    pace:84,
+    shooting:94,
+    passing:98,
+    dribbling:97,
+    defending:45,
+    physical:88
+  },
+  image:"images/players/zidane.jpg"
+},
+
+ronaldinho:{
+  id:"ronaldinho",
+  name:"Ronaldinho",
+  nation:"Brazil",
+  club:"Barcelona",
+  pos:["LW","CAM"],
+  base:95,
+  stats:{
+    pace:90,
+    shooting:91,
+    passing:94,
+    dribbling:99,
+    defending:35,
+    physical:82
+  },
+  image:"images/players/ronaldinho.jpg"
+},
+
+henry:{
+  id:"henry",
+  name:"Thierry Henry",
+  nation:"France",
+  club:"Arsenal",
+  pos:["ST","LW"],
+  base:95,
+  stats:{
+    pace:96,
+    shooting:96,
+    passing:87,
+    dribbling:94,
+    defending:30,
+    physical:86
+  },
+  image:"images/players/henry.jpg"
+}
+
+};
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Football Ultimate</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#07101d;
+  color:white;
+}
+
+button{
+  border:0;
+  color:white;
+  font-weight:800;
+  cursor:pointer;
+  user-select:none;
+  touch-action:manipulation;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* ================= START ================= */
+
+#startScreen{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 50% 25%,#123d5b,#06101d 55%,#02060c);
+  z-index:1000;
+}
+
+.startBox{
+  width:min(620px,92vw);
+  padding:45px 30px;
+  text-align:center;
+  border:1px solid #245b7d;
+  border-radius:25px;
+  background:rgba(5,15,27,.94);
+  box-shadow:0 30px 100px #000;
+}
+
+.logo{
+  font-size:clamp(38px,8vw,70px);
+  font-weight:1000;
+  letter-spacing:2px;
+  color:#4de8ff;
+  text-shadow:0 0 30px #008cff;
+}
+
+.sub{
+  color:#9cb5c9;
+  margin:10px 0 35px;
+}
+
+.bigBtn{
+  width:100%;
+  padding:18px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#00bfff,#006cff);
+  font-size:20px;
+  box-shadow:0 10px 30px #006cff55;
+}
+
+.bigBtn:active{
+  transform:scale(.97);
+}
+
+/* ================= CLUB ================= */
+
+#clubScreen{
+  position:fixed;
+  inset:0;
+  overflow:auto;
+  background:#07101d;
+  z-index:900;
+  padding:30px;
+}
+
+.screenTitle{
+  font-size:34px;
+  font-weight:1000;
+  margin-bottom:20px;
+}
+
+.clubGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:15px;
+  max-width:1000px;
+  margin:auto;
+}
+
+.club{
+  padding:25px 15px;
+  min-height:130px;
+  border-radius:18px;
+  background:#101d2d;
+  border:1px solid #203b52;
+  transition:.15s;
+}
+
+.club:hover{
+  transform:translateY(-4px);
+  border-color:#26caff;
+}
+
+.clubIcon{
+  font-size:45px;
+  margin-bottom:10px;
+}
+
+.clubName{
+  font-size:17px;
+}
+
+.skipNation{
+  margin:25px auto;
+  display:block;
+  padding:14px 25px;
+  background:#17293a;
+  border-radius:12px;
+}
+
+/* ================= APP ================= */
+
+#app{
+  display:none;
+  width:100%;
+  height:100%;
+}
+
+.layout{
+  display:flex;
+  width:100%;
+  height:100%;
+}
+
+.sidebar{
+  width:230px;
+  flex-shrink:0;
+  background:#081522;
+  border-right:1px solid #1c3548;
+  padding:15px;
+  overflow:auto;
+}
+
+.brand{
+  font-size:25px;
+  font-weight:1000;
+  color:#42ddff;
+  margin:10px 8px 20px;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.nav button{
+  text-align:left;
+  padding:13px;
+  background:#0d1d2c;
+  border-radius:10px;
+  color:#b8cad7;
+}
+
+.nav button:hover,
+.nav button.active{
+  background:#123b53;
+  color:#55e5ff;
+}
+
+.main{
+  flex:1;
+  min-width:0;
+  overflow:auto;
+  background:
+radial-gradient(circle at 50% 0,#102c3f,#07101d 55%);
+}
+
+.topbar{
+  height:65px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  border-bottom:1px solid #1a3244;
+  background:#07131fdd;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.money{
+  display:flex;
+  gap:10px;
+}
+
+.money span{
+  padding:8px 12px;
+  background:#0d2232;
+  border-radius:9px;
+  font-weight:800;
+}
+
+#content{
+  padding:20px;
+}
+
+/* ================= PANELS ================= */
+
+.panel{
+  background:#0c1b2a;
+  border:1px solid #1b3448;
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:18px;
+}
+
+.panelTitle{
+  font-size:22px;
+  font-weight:900;
+  margin-bottom:15px;
+}
+
+.homeGrid{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:18px;
+}
+
+.hero{
+  min-height:270px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border-radius:20px;
+  background:
+    radial-gradient(circle,#134b64,#0b1a28 65%);
+  border:1px solid #20516c;
+}
+
+.hero h1{
+  font-size:clamp(35px,6vw,70px);
+  color:#53e7ff;
+}
+
+.hero p{
+  color:#9db5c5;
+  margin-top:10px;
+}
+
+/* ================= CARDS ================= */
+
+.cardGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(165px,1fr));
+  gap:15px;
+}
+
+.card{
+  position:relative;
+  min-height:250px;
+  padding:12px;
+  border-radius:18px;
+  overflow:hidden;
+  background:
+    linear-gradient(160deg,#1d354d,#08111c);
+  border:2px solid #31516a;
+  cursor:pointer;
+  transition:.15s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  border-color:#4be7ff;
+}
+
+.cardTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+
+.ovr{
+  font-size:30px;
+  font-weight:1000;
+  color:#ffe36b;
+}
+
+.pos{
+  font-weight:900;
+  color:#8da9bc;
+}
+
+.face{
+  width:105px;
+  height:105px;
+  margin:8px auto;
+  border-radius:50%;
+  overflow:hidden;
+  border:2px solid #7894a8;
+  background:#172838;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:45px;
+}
+
+.face img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.cardName{
+  text-align:center;
+  font-weight:1000;
+  font-size:17px;
+}
+
+.season{
+  text-align:center;
+  margin-top:4px;
+  color:#51ddff;
+  font-size:12px;
+  font-weight:900;
+}
+
+.upgrade{
+  text-align:center;
+  margin-top:6px;
+  color:#ffcf45;
+  font-weight:900;
+}
+
+.statLine{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  margin-top:10px;
+  color:#a8bdca;
+}
+
+/* ================= SQUAD ================= */
+
+.pitch{
+  position:relative;
+  width:min(900px,100%);
+  aspect-ratio:16/9;
+  margin:auto;
+  border:3px solid #d5f1e1;
+  border-radius:18px;
+  overflow:hidden;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #11753d 0,
+      #11753d 10%,
+      #0e6937 10%,
+      #0e6937 20%
+    );
+}
+
+.pitch:before{
+  content:"";
+  position:absolute;
+  inset:15%;
+  border:2px solid #d5f1e1;
+  border-radius:50%;
+}
+
+.pitchLine{
+  position:absolute;
+  left:50%;
+  top:0;
+  bottom:0;
+  width:2px;
+  background:#d5f1e1;
+}
+
+.slot{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  width:115px;
+  cursor:pointer;
+  text-align:center;
+}
+
+.slot .miniCard{
+  width:65px;
+  height:82px;
+  margin:auto;
+  padding:5px;
+  border-radius:9px;
+  background:#14263a;
+  border:2px solid #ffd45b;
+}
+
+.slot .miniFace{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  margin:auto;
+  overflow:hidden;
+  background:#263d4f;
+}
+
+.slot .miniFace img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.slot b{
+  display:block;
+  margin-top:4px;
+  font-size:12px;
+  text-shadow:0 2px 4px #000;
+}
+
+/* ================= LIST ================= */
+
+.list{
+  display:grid;
+  gap:10px;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px;
+  background:#102334;
+  border-radius:11px;
+  border:1px solid #1d3a4e;
+}
+
+.row button{
+  padding:9px 13px;
+  border-radius:8px;
+  background:#087da5;
+}
+
+.row button:disabled{
+  opacity:.4;
+}
+
+/* ================= MATCH ================= */
+
+#matchScreen{
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:2000;
+  display:none;
+}
+
+#matchCanvas{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+.matchHUD{
+  position:absolute;
+  top:15px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:15px;
+  align-items:center;
+  padding:10px 20px;
+  background:#07121ddd;
+  border:1px solid #31556b;
+  border-radius:12px;
+  font-weight:1000;
+}
+
+.score{
+  font-size:24px;
+  color:#fff;
+}
+
+.matchExit{
+  position:absolute;
+  top:15px;
+  right:15px;
+  padding:10px 14px;
+  background:#a62e38;
+  border-radius:9px;
+}
+
+/* ================= CONTROLS ================= */
+
+.controls{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.joy{
+  position:absolute;
+  left:30px;
+  bottom:35px;
+  width:135px;
+  height:135px;
+  border-radius:50%;
+  background:#ffffff18;
+  border:2px solid #ffffff33;
+  pointer-events:auto;
+  touch-action:none;
+}
+
+.knob{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:58px;
+  height:58px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:#ffffff45;
+  border:2px solid #fff7;
+}
+
+.actions{
+  position:absolute;
+  right:25px;
+  bottom:30px;
+  width:190px;
+  height:190px;
+  pointer-events:none;
+}
+
+.act{
+  position:absolute;
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  pointer-events:auto;
+  touch-action:none;
+  box-shadow:0 5px 20px #0008;
+}
+
+.act.shoot{
+  right:0;
+  top:65px;
+  background:#e43b4e;
+}
+
+.act.pass{
+  left:20px;
+  top:90px;
+  background:#188bd1;
+}
+
+.act.cross{
+  right:45px;
+  top:0;
+  background:#d68a22;
+}
+
+.act.tackle{
+  left:0;
+  top:25px;
+  background:#6c45ca;
+}
+
+.act.sprint{
+  right:0;
+  bottom:0;
+  background:#159d62;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:800px){
+  .sidebar{
+    width:68px;
+    padding:8px 5px;
+  }
+
+  .brand{
+    font-size:0;
+    text-align:center;
+  }
+
+  .brand:first-letter{
+    font-size:28px;
+  }
+
+  .nav button{
+    text-align:center;
+    font-size:0;
+    padding:13px 5px;
+  }
+.nav button::first-letter{
+    font-size:20px;
+  }
+
+  .topbar{
+    padding:0 10px;
+  }
+
+  .money span{
+    font-size:11px;
+    padding:7px;
+  }
+
+  #content{
+    padding:10px;
+  }
+
+  .homeGrid{
+    grid-template-columns:1fr;
+  }
+
+  .slot{
+    width:80px;
+  }
+
+  .slot .miniCard{
+    width:48px;
+    height:60px;
+  }
+
+  .slot .miniFace{
+    width:32px;
+    height:32px;
+  }
+
+  .slot b{
+    font-size:9px;
+  }
+
+  .cardGrid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .face{
+    width:85px;
+    height:85px;
+  }
+}
+
+/* ================= TOAST ================= */
+
+#toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translateX(-50%) translateY(100px);
+  padding:13px 20px;
+  border-radius:12px;
+  background:#102c3d;
+  border:1px solid #3e91b6;
+  z-index:5000;
+  transition:.25s;
+  font-weight:800;
+}
+
+#toast.show{
+  transform:translateX(-50%) translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= START ================= -->
+
+<section id="startScreen">
+  <div class="startBox">
+    <div class="logo">FOOTBALL<br>ULTIMATE</div>
